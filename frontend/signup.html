@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Sahakar Mandal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+    <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <!-- Header -->
+                            <div class="text-center mb-4">
+                                <i class="fas fa-hands-helping fa-3x text-primary mb-3"></i>
+                                <h2 class="card-title fw-bold text-primary">सहकार मंडळ</h2>
+                                <p class="text-muted">नया खाता बनाएं / Create New Account</p>
+                            </div>
+
+                            <!-- Signup Form -->
+                            <form id="signup-form">
+                                <!-- Name -->
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">नाम / Full Name</label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control form-control-lg" 
+                                        id="name" 
+                                        name="name"
+                                        placeholder="आपका नाम"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">ईमेल / Email</label>
+                                    <input 
+                                        type="email" 
+                                        class="form-control form-control-lg" 
+                                        id="email" 
+                                        name="email"
+                                        placeholder="your@email.com"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Phone -->
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">फोन / Phone Number</label>
+                                    <input 
+                                        type="tel" 
+                                        class="form-control form-control-lg" 
+                                        id="phone" 
+                                        name="phone"
+                                        placeholder="+91-XXXXXXXXXX"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Area -->
+                                <div class="mb-3">
+                                    <label for="area" class="form-label">क्षेत्र / Area</label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control form-control-lg" 
+                                        id="area" 
+                                        name="area"
+                                        placeholder="अपना क्षेत्र दर्ज करें"
+                                    >
+                                </div>
+
+                                <!-- Role Selection -->
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">भूमिका / Role</label>
+                                    <select class="form-select form-select-lg" id="role" name="role" required>
+                                        <option value="">भूमिका चुनें / Select Role</option>
+                                        <option value="volunteer">स्वयंसेवक / Volunteer</option>
+                                        <option value="collection">संग्रह टीम / Collection Team</option>
+                                        <option value="event">कार्यक्रम टीम / Event Team</option>
+                                        <option value="finance">वित्त टीम / Finance Team</option>
+                                    </select>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">पासवर्ड / Password</label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control form-control-lg" 
+                                        id="password" 
+                                        name="password"
+                                        placeholder="कम से कम 8 वर्ण"
+                                        required
+                                    >
+                                    <small class="form-text text-muted d-block mt-2">
+                                        <i class="fas fa-info-circle"></i>
+                                        कम से कम 8 वर्ण, एक अपरकेस, एक संख्या
+                                    </small>
+                                </div>
+
+                                <!-- Confirm Password -->
+                                <div class="mb-3">
+                                    <label for="confirm-password" class="form-label">पासवर्ड की पुष्टि करें / Confirm Password</label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control form-control-lg" 
+                                        id="confirm-password" 
+                                        name="confirm-password"
+                                        placeholder="पुष्टि करने के लिए फिर से दर्ज करें"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Terms & Conditions -->
+                                <div class="mb-4 form-check">
+                                    <input 
+                                        type="checkbox" 
+                                        class="form-check-input" 
+                                        id="terms" 
+                                        name="terms"
+                                        required
+                                    >
+                                    <label class="form-check-label" for="terms">
+                                        मैं शर्तें और शर्तें स्वीकार करता हूँ / I accept Terms & Conditions
+                                    </label>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">
+                                    <i class="fas fa-user-plus"></i> खाता बनाएं / Create Account
+                                </button>
+                            </form>
+
+                            <!-- Login Link -->
+                            <p class="text-center text-muted mt-4">
+                                पहले से खाता है? / Already have an account? 
+                                <a href="login.html" class="text-primary fw-bold text-decoration-none">
+                                    लॉगिन करें / Sign In
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="spinner-overlay" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/signup.js"></script>
+</body>
+</html>

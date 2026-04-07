@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sahakar Mandal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="dashboard.html">
+                <i class="fas fa-hands-helping me-2"></i>सहकार मंडळ
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text text-white me-3">
+                            <i class="fas fa-user"></i> <span id="user-name">User</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-light btn-sm" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showSection('summary')">
+                                <i class="fas fa-chart-line"></i> सारांश / Summary
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('donations')">
+                                <i class="fas fa-hand-holding-heart"></i> दान / Donations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('receipts')">
+                                <i class="fas fa-receipt"></i> रसीदें / Receipts
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('expenses')">
+                                <i class="fas fa-money-bill"></i> खर्च / Expenses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('events')">
+                                <i class="fas fa-calendar-alt"></i> कार्यक्रम / Events
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('gallery')">
+                                <i class="fas fa-image"></i> गैलरी / Gallery
+                            </a>
+                        </li>
+                        <li class="nav-item admin-only" style="display: none;">
+                            <a class="nav-link" href="#" onclick="showSection('users')">
+                                <i class="fas fa-users"></i> सदस्य / Members
+                            </a>
+                        </li>
+                        <li class="nav-item admin-only" style="display: none;">
+                            <a class="nav-link" href="#" onclick="showSection('inventory')">
+                                <i class="fas fa-boxes"></i> इन्वेंटरी / Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('settings')">
+                                <i class="fas fa-cog"></i> सेटिंग्स / Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mb-5">
+                <!-- Summary Section -->
+                <div id="summary-section" class="section-content">
+                    <h2 class="mb-4">सारांश / Summary</h2>
+                    
+                    <!-- Stats Cards -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card border-0 shadow-sm stats-card">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted">कुल दान / Total Donations</h6>
+                                    <h3 class="text-success fw-bold">₹<span id="total-donations">0</span></h3>
+                                    <small class="text-muted"><i class="fas fa-arrow-up text-success"></i> +12% इस माह</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card border-0 shadow-sm stats-card">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted">कुल खर्च / Total Expenses</h6>
+                                    <h3 class="text-danger fw-bold">₹<span id="total-expenses">0</span></h3>
+                                    <small class="text-muted"><i class="fas fa-arrow-down text-danger"></i> -5% इस माह</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card border-0 shadow-sm stats-card">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted">शेष / Balance</h6>
+                                    <h3 class="text-primary fw-bold">₹<span id="balance">0</span></h3>
+                                    <small class="text-muted"><i class="fas fa-info-circle"></i> सकल शेष</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card border-0 shadow-sm stats-card">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted">दान संख्या / Donations Count</h6>
+                                    <h3 class="text-info fw-bold"><span id="donation-count">0</span></h3>
+                                    <small class="text-muted"><i class="fas fa-history"></i> कुल लेनदेन</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="card-title">मासिक दान / Monthly Donations</h6>
+                                    <canvas id="monthly-chart" height="80"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="card-title">दान वितरण / Donation Distribution</h6>
+                                    <canvas id="distribution-chart" height="80"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donations Section -->
+                <div id="donations-section" class="section-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>दान / Donations</h2>
+                        <button class="btn btn-primary" onclick="showDonationForm()">
+                            <i class="fas fa-plus"></i> नया दान / New Donation
+                        </button>
+                    </div>
+                    <div id="donations-list" class="row g-3"></div>
+                </div>
+
+                <!-- Receipts Section -->
+                <div id="receipts-section" class="section-content" style="display: none;">
+                    <h2 class="mb-4">रसीदें / Receipts</h2>
+                    <div id="receipts-list" class="row g-3"></div>
+                </div>
+
+                <!-- Expenses Section -->
+                <div id="expenses-section" class="section-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>खर्च / Expenses</h2>
+                        <button class="btn btn-primary" onclick="showExpenseForm()">
+                            <i class="fas fa-plus"></i> नया खर्च / New Expense
+                        </button>
+                    </div>
+                    <div id="expenses-list" class="row g-3"></div>
+                </div>
+
+                <!-- Events Section -->
+                <div id="events-section" class="section-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>कार्यक्रम / Events</h2>
+                        <button class="btn btn-primary" onclick="showEventForm()">
+                            <i class="fas fa-plus"></i> नया कार्यक्रम / New Event
+                        </button>
+                    </div>
+                    <div id="events-list" class="row g-3"></div>
+                </div>
+
+                <!-- Gallery Section -->
+                <div id="gallery-section" class="section-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>गैलरी / Gallery</h2>
+                        <button class="btn btn-primary" onclick="showGalleryUpload()">
+                            <i class="fas fa-upload"></i> छवि अपलोड / Upload Image
+                        </button>
+                    </div>
+                    <div id="gallery-list" class="row g-3"></div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users-section" class="section-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>सदस्य / Members</h2>
+                        <button class="btn btn-primary" onclick="showUserForm()">
+                            <i class="fas fa-user-plus"></i> सदस्य जोड़ें / Add Member
+                        </button>
+                    </div>
+                    <div id="users-list" class="row g-3"></div>
+                </div>
+
+                <!-- Inventory Section -->
+                <div id="inventory-section" class="section-content" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>इन्वेंटरी / Inventory</h2>
+                        <button class="btn btn-primary" onclick="showInventoryForm()">
+                            <i class="fas fa-plus"></i> आइटम जोड़ें / Add Item
+                        </button>
+                    </div>
+                    <div id="inventory-list" class="row g-3"></div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings-section" class="section-content" style="display: none;">
+                    <h2 class="mb-4">सेटिंग्स / Settings</h2>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">भाषा / Language</label>
+                                <select class="form-select" id="language-select">
+                                    <option value="hi">हिन्दी / Marathi</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">थीम / Theme</label>
+                                <select class="form-select" id="theme-select">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveSettings()">
+                                सहेजें / Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Donation Modal -->
+    <div class="modal fade" id="donationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">नया दान / New Donation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="donation-form">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="donor-name" class="form-label">दानकर्ता का नाम / Donor Name</label>
+                            <input type="text" class="form-control" id="donor-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="donor-email" class="form-label">ईमेल / Email</label>
+                            <input type="email" class="form-control" id="donor-email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="donor-mobile" class="form-label">मोबाइल / Mobile</label>
+                            <input type="tel" class="form-control" id="donor-mobile">
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">राशि / Amount (₹)</label>
+                            <input type="number" class="form-control" id="amount" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="donation-type" class="form-label">प्रकार / Type</label>
+                            <select class="form-select" id="donation-type">
+                                <option value="cash">नकद / Cash</option>
+                                <option value="online">ऑनलाइन / Online</option>
+                                <option value="check">चेक / Check</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="purpose" class="form-label">उद्देश्य / Purpose</label>
+                            <input type="text" class="form-control" id="purpose" value="General">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">बंद करें / Close</button>
+                        <button type="submit" class="btn btn-primary">सहेजें / Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="spinner-overlay" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

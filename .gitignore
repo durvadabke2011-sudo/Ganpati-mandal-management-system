@@ -1,0 +1,110 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Firebase configuration (SENSITIVE!)
+firebase-config.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Flask
+instance/
+.webassets-cache
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node (if using frontend build tools)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Logs
+logs/
+*.log
+
+# Database backups
+*.db
+*.sqlite
+*.sqlite3
+backup/
+
+# Temporary files
+*.tmp
+.tmp/
+temp/
+*.bak
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Mobile app builds
+flutter/build/
+android/build/
+ios/Pods/
+.gradle/
+.m2/
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Miscellaneous
+.cache/
+.tox/
+.coverage.*
+.hypothesis/
+
+# Firebase emulator
+.emulator_data/
+
+# Keep important files
+!.github/
+!.gitkeep
+!README.md
+!LICENSE

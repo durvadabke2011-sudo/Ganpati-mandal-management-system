@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt - Sahakar Mandal</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .receipt-container {
+            background: white;
+            border: 2px solid #FF6B35;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #FF6B35;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .receipt-header h2 {
+            color: #FF6B35;
+            font-weight: bold;
+        }
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px 0;
+        }
+        .receipt-item label {
+            font-weight: 500;
+            color: #333;
+        }
+        .receipt-item span {
+            color: #666;
+        }
+        .receipt-total {
+            border-top: 2px solid #FF6B35;
+            border-bottom: 2px solid #FF6B35;
+            padding: 15px 0;
+            margin: 20px 0;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .receipt-footer {
+            text-align: center;
+            border-top: 2px dashed #FF6B35;
+            padding-top: 20px;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .qr-code-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .action-buttons {
+                display: none;
+            }
+            .receipt-container {
+                border: 1px solid #999;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-hands-helping me-2"></i>सहकार मंडळ
+            </a>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="receipt-container" id="receipt-container">
+            <!-- Receipt Header -->
+            <div class="receipt-header">
+                <h2>सहकार मंडळ</h2>
+                <p class="text-muted mb-0">Sahakar Mandal</p>
+                <p class="text-muted small">Community Management System</p>
+            </div>
+
+            <!-- Receipt Title -->
+            <div class="text-center mb-4">
+                <h5 class="text-primary">दान रसीद</h5>
+                <p class="small text-muted">Donation Receipt</p>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loading" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Receipt Content -->
+            <div id="receipt-content" style="display: none;">
+                <!-- Receipt ID -->
+                <div class="receipt-item">
+                    <label>रसीद क्रमांक / Receipt ID:</label>
+                    <span id="receipt-id">-</span>
+                </div>
+
+                <!-- Date -->
+                <div class="receipt-item">
+                    <label>तारीख / Date:</label>
+                    <span id="receipt-date">-</span>
+                </div>
+
+                <!-- Divider -->
+                <hr class="my-3">
+
+                <!-- Donor Details -->
+                <div class="mb-4">
+                    <h6 class="text-primary fw-bold mb-3">दानकर्ता विवरण / Donor Details</h6>
+                    <div class="receipt-item">
+                        <label>नाम / Name:</label>
+                        <span id="donor-name">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <label>ईमेल / Email:</label>
+                        <span id="donor-email">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <label>मोबाइल / Mobile:</label>
+                        <span id="donor-mobile">-</span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <hr class="my-3">
+
+                <!-- Donation Details -->
+                <div class="mb-4">
+                    <h6 class="text-primary fw-bold mb-3">दान विवरण / Donation Details</h6>
+                    <div class="receipt-item">
+                        <label>राशि / Amount:</label>
+                        <span id="amount">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <label>उद्देश्य / Purpose:</label>
+                        <span id="purpose">-</span>
+                    </div>
+                    <div class="receipt-item">
+                        <label>स्थिति / Status:</label>
+                        <span id="status">-</span>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="receipt-total text-center">
+                    कुल राशि / Total Amount: <span id="total-amount">₹0</span>
+                </div>
+
+                <!-- QR Code -->
+                <div class="qr-code-section">
+                    <p class="small text-muted mb-2">डिजिटल रसीद कोड / Digital Receipt Code</p>
+                    <img id="qr-code" src="" alt="QR Code" style="width: 150px; height: 150px;">
+                </div>
+
+                <!-- Footer -->
+                <div class="receipt-footer">
+                    <p class="mb-2"><strong>धन्यवाद! / Thank You!</strong></p>
+                    <p class="mb-2">आपके दान के लिए हम आपके प्रति कृतज्ञ हैं।</p>
+                    <p class="small">We appreciate your generous contribution.</p>
+                    <hr class="my-3">
+                    <p class="mb-0">सहकार मंडळ | Sahakar Mandal</p>
+                    <p class="small mb-0">© 2024 All Rights Reserved</p>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="alert alert-danger" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="error-text">Receipt not found</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> प्रिंट / Print
+                </button>
+                <button class="btn btn-success" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> PDF डाउनलोड / Download PDF
+                </button>
+                <button class="btn btn-info" onclick="shareReceipt()">
+                    <i class="fas fa-share-alt"></i> साझा करें / Share
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 Sahakar Mandal. सर्वाधिकार सुरक्षित। All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script>
+        // Get receipt ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const receiptId = window.location.pathname.split('/').pop();
+
+        // Load receipt data
+        async function loadReceipt() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/receipts/${receiptId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Receipt not found');
+                }
+
+                // Populate receipt data
+                document.getElementById('receipt-id').textContent = data.receipt_id || receiptId;
+                document.getElementById('receipt-date').textContent = formatDate(data.date);
+                document.getElementById('donor-name').textContent = data.donor_name || 'Anonymous';
+                document.getElementById('donor-email').textContent = data.donor_email || 'N/A';
+                document.getElementById('donor-mobile').textContent = data.donor_mobile || 'N/A';
+                document.getElementById('amount').textContent = `₹ ${data.amount || 0}`;
+                document.getElementById('purpose').textContent = data.purpose || 'General';
+                document.getElementById('status').textContent = data.status || 'Active';
+                document.getElementById('total-amount').textContent = `₹ ${data.amount || 0}`;
+
+                // Load QR code
+                loadQRCode(receiptId);
+
+                // Hide loading, show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('receipt-content').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading receipt:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('error-text').textContent = error.message;
+            }
+        }
+
+        // Load QR code image
+        async function loadQRCode(receiptId) {
+            try {
+                const qrImg = document.getElementById('qr-code');
+                qrImg.src = `${API_BASE_URL}/api/receipts/${receiptId}/qrcode`;
+            } catch (error) {
+                console.error('Error loading QR code:', error);
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('hi-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Download PDF
+        function downloadPDF() {
+            window.location.href = `${API_BASE_URL}/api/receipts/${receiptId}/pdf`;
+        }
+
+        // Share receipt
+        function shareReceipt() {
+            const receiptUrl = window.location.href;
+            const shareText = `मेरी दान रसीद देखें / Check my donation receipt: ${receiptUrl}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Sahakar Mandal Donation Receipt',
+                    text: shareText,
+                    url: receiptUrl
+                });
+            } else {
+                // Fallback: Copy to clipboard
+                navigator.clipboard.writeText(receiptUrl).then(() => {
+                    alert('Receipt link copied to clipboard!');
+                });
+            }
+        }
+
+        // Load receipt on page load
+        document.addEventListener('DOMContentLoaded', loadReceipt);
+    </script>
+</body>
+</html>

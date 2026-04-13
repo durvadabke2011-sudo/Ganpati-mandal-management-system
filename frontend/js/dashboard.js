@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Check user role and show/hide admin features
     updateUIForRole();
+    
+    // Debug: Log current user's role
+    const role = AuthManager.getUserRole();
+    console.log('Current user role:', role);
+    console.log('Can create donations:', ['admin', 'finance', 'collection'].includes(role));
 });
 
 /**
@@ -222,6 +227,16 @@ function setupEventListeners() {
             await saveDonation();
         });
     }
+
+    // Translation toggle
+    const translationToggle = document.getElementById('translation-toggle');
+    if (translationToggle) {
+        const saved = localStorage.getItem('enableTranslations') === 'true';
+        translationToggle.checked = saved;
+        translationToggle.addEventListener('change', (e) => {
+            localStorage.setItem('enableTranslations', e.target.checked);
+        });
+    }
 }
 
 /**
@@ -277,6 +292,9 @@ async function loadSectionData(section) {
                 break;
             case 'inventory':
                 await loadInventory();
+                break;
+            case 'settings':
+                loadSettings();
                 break;
         }
 
@@ -531,30 +549,75 @@ async function saveDonation() {
     try {
         UIUtils.showLoading();
 
+        // Get form values
+        const donorName = document.getElementById('donor-name').value.trim();
+        const amount = document.getElementById('amount').value.trim();
+
+        // Validation
+        if (!donorName) {
+            UIUtils.hideLoading();
+            UIUtils.showToast('Donor name is required', 'warning');
+            return;
+        }
+
+        if (!amount || parseFloat(amount) <= 0) {
+            UIUtils.hideLoading();
+            UIUtils.showToast('Please enter a valid amount', 'warning');
+            return;
+        }
+
         const donationData = {
-            donor_name: document.getElementById('donor-name').value,
-            donor_email: document.getElementById('donor-email').value,
-            donor_mobile: document.getElementById('donor-mobile').value,
-            amount: parseFloat(document.getElementById('amount').value),
+            donor_name: donorName,
+            donor_email: document.getElementById('donor-email').value.trim(),
+            donor_mobile: document.getElementById('donor-mobile').value.trim(),
+            amount: parseFloat(amount),
             donation_type: document.getElementById('donation-type').value,
-            purpose: document.getElementById('purpose').value
+            purpose: document.getElementById('purpose').value.trim()
         };
 
-        await APIClient.post(API_ENDPOINTS.DONATIONS.CREATE, donationData);
+        console.log('Submitting donation:', donationData);
+        
+        const response = await APIClient.post(API_ENDPOINTS.DONATIONS.CREATE, donationData);
+        console.log('Donation response:', response);
 
         UIUtils.hideLoading();
         UIUtils.showToast('Donation saved successfully!', 'success');
 
-        // Close modal and reload
-        const modal = bootstrap.Modal.getInstance(document.getElementById('donationModal'));
-        modal.hide();
+        // Reset form
+        document.getElementById('donation-form').reset();
+        document.getElementById('purpose').value = 'General';
 
-        // Reload donations
+        // Close modal
+        const donationModal = document.getElementById('donationModal');
+        if (donationModal) {
+            const modalInstance = bootstrap.Modal.getInstance(donationModal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+
+        // Reload donations list
         await loadDonations();
     } catch (error) {
         UIUtils.hideLoading();
         console.error('Error saving donation:', error);
-        UIUtils.showToast('Failed to save donation', 'danger');
+        
+        // Show detailed error message
+        let errorMessage = 'Failed to save donation';
+        if (error.message) {
+            errorMessage = error.message;
+        } else if (error.data && error.data.message) {
+            errorMessage = error.data.message;
+        }
+        
+        // Check for authorization error
+        if (error.status === 403) {
+            errorMessage = 'You do not have permission to create donations. Required role: admin, finance, or collection';
+        } else if (error.status === 401) {
+            errorMessage = 'Your session has expired. Please login again.';
+        }
+        
+        UIUtils.showToast(errorMessage, 'danger');
     }
 }
 
@@ -594,8 +657,35 @@ function showInventoryForm() {
 }
 
 /**
+ * Load settings
+ */
+function loadSettings() {
+    // Load translation toggle state
+    const translationToggle = document.getElementById('translation-toggle');
+    if (translationToggle) {
+        const enableTranslations = localStorage.getItem('enableTranslations') === 'true';
+        translationToggle.checked = enableTranslations;
+    }
+
+    // Load theme preference
+    const themeSelect = document.getElementById('theme-select');
+    if (themeSelect) {
+        const theme = localStorage.getItem('theme') || 'light';
+        themeSelect.value = theme;
+    }
+}
+
+/**
  * Save settings
  */
 function saveSettings() {
+    // Save theme preference
+    const themeSelect = document.getElementById('theme-select');
+    if (themeSelect) {
+        localStorage.setItem('theme', themeSelect.value);
+        // Apply theme
+        document.documentElement.setAttribute('data-bs-theme', themeSelect.value);
+    }
+    
     UIUtils.showToast('Settings saved successfully!', 'success');
 }

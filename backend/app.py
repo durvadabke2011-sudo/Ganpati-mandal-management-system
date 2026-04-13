@@ -34,8 +34,9 @@ from reportlab.pdfgen import canvas
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app with static folder for frontend
+frontend_path = os.path.join(os.path.dirname(__file__), '..', 'frontend')
+app = Flask(__name__, static_folder=frontend_path, static_url_path='')
 app.config['JSON_SORT_KEYS'] = False
 
 # Enable CORS
@@ -70,14 +71,17 @@ else:
 
 try:
     # Initialize Firebase only if not already initialized
-    if not firebase_admin.get_app(name='default'):
+    try:
+        firebase_admin.get_app(name='default')
+    except ValueError:
+        # App not initialized, initialize it now
         cred = credentials.Certificate(firebase_config)
         firebase_admin.initialize_app(cred, {
             'storageBucket': os.getenv('FIREBASE_STORAGE_BUCKET', '')
         })
-except ValueError:
-    # App already initialized
-    pass
+except Exception as e:
+    print(f"Error initializing Firebase: {e}")
+    raise
 
 # Initialize Firebase services
 db = firestore.client()
@@ -271,6 +275,34 @@ def generate_pdf_receipt(donation_data):
         print(f"Error generating PDF: {str(e)}")
         return None
 
+# ==================== Frontend Routes ====================
+
+@app.route('/')
+def serve_index():
+    """Serve the main index page"""
+    return send_file(os.path.join(app.static_folder, 'index.html'))
+
+@app.route('/login')
+def serve_login():
+    """Serve the login page"""
+    return send_file(os.path.join(app.static_folder, 'login.html'))
+
+@app.route('/signup')
+def serve_signup():
+    """Serve the signup page"""
+    return send_file(os.path.join(app.static_folder, 'signup.html'))
+
+@app.route('/dashboard')
+def serve_dashboard():
+    """Serve the dashboard page"""
+    return send_file(os.path.join(app.static_folder, 'dashboard.html'))
+
+@app.route('/receipt')
+@app.route('/receipt/<receipt_id>')
+def serve_receipt(receipt_id=None):
+    """Serve the receipt page"""
+    return send_file(os.path.join(app.static_folder, 'receipt.html'))
+
 # ==================== Authentication Routes ====================
 
 @app.route('/api/auth/signup', methods=['POST'])
@@ -448,7 +480,7 @@ def get_donations(payload):
 
 @app.route('/api/donations', methods=['POST'])
 @token_required
-@role_required('admin', 'finance', 'collection')
+@role_required('admin', 'finance', 'collection', 'volunteer')
 def create_donation(payload):
     """Create new donation"""
     try:
@@ -510,7 +542,7 @@ def get_donation(payload, donation_id):
 
 @app.route('/api/donations/<donation_id>', methods=['PUT'])
 @token_required
-@role_required('admin', 'finance', 'collection')
+@role_required('admin', 'finance', 'collection', 'volunteer')
 def update_donation(payload, donation_id):
     """Update donation"""
     try:
